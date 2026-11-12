@@ -8,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.OptIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,8 +32,7 @@ import java.io.FileInputStream
 
 class MainActivity:ComponentActivity(){ override fun onCreate(savedInstanceState:Bundle?){super.onCreate(savedInstanceState);setContent{SfxApp()}} }
 
-@OptIn(UnstableApi::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@kotlin.OptIn(UnstableApi::class, ExperimentalMaterial3Api::class)
 @Composable fun SfxApp(){
  val ctx=androidx.compose.ui.platform.LocalContext.current
  var page by remember{mutableStateOf("home")};var script by remember{mutableStateOf("")};var style by remember{mutableStateOf("premium_cinematic")};var lang by remember{mutableStateOf("Hindi")};var prompt by remember{mutableStateOf("")}
@@ -62,7 +60,7 @@ fun displayName(ctx:android.content.Context,u:Uri):String=ctx.contentResolver.qu
 fun copyText(ctx:android.content.Context,s:String){val c=ctx.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager;c.setPrimaryClip(android.content.ClipData.newPlainText("SFX Master Prompt",s))}
 @Composable fun AssetCard(a:AssetSlot,onPick:()->Unit){Card(colors=CardDefaults.cardColors(containerColor=Color(0xFF18232C))){Row(Modifier.fillMaxWidth().padding(10.dp),verticalAlignment=Alignment.CenterVertically){Icon(Icons.Default.AudioFile,null,tint=Color(0xFF69E7B9));Spacer(Modifier.width(8.dp));Column(Modifier.weight(1f)){Text(a.filename,color=Color.White,fontSize=12.sp,fontWeight=FontWeight.Bold);Text("${a.id} · ${a.type}",color=Color.LightGray,fontSize=10.sp)};Column(horizontalAlignment=Alignment.End){Text(if(a.uri!=null)"ADDED" else "MISSING",color=if(a.uri!=null)Color(0xFF69E7B9)else Color(0xFFFFC46B),fontSize=10.sp);TextButton(onClick=onPick){Text(if(a.uri!=null)"Replace" else "Upload")}}}}}
 
-@OptIn(UnstableApi::class)
+@kotlin.OptIn(UnstableApi::class)
 @Composable fun TimelinePage(mod:Modifier,ctx:android.content.Context,project:SfxProject?,video:Uri?,videoName:String,assets:List<AssetSlot>,events:List<AudioEvent>,onEvents:(List<AudioEvent>)->Unit,onVideo:()->Unit,onBulk:()->Unit,onPick:(String)->Unit,exporting:Boolean,progress:Float,onExport:()->Unit,status:String){
  val player=remember(video){if(video==null)null else ExoPlayer.Builder(ctx).build().apply{setMediaItem(MediaItem.fromUri(video));prepare()}};DisposableEffect(player){onDispose{player?.release()}}
  LazyColumn(mod.fillMaxSize().padding(14.dp),verticalArrangement=Arrangement.spacedBy(10.dp)){
